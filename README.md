@@ -19,12 +19,19 @@ trong kho **8.532 văn bản**.
 
 > *Vietnamese legal document retrieval. Two-stage pipeline: hybrid retrieval
 > (chunk-level BM25 ⊕ dense bi-encoder, fused with RRF) → cross-encoder reranking with
-> deep chunk reading → slot-reservation blending. Public LB 0.9124. Reports in `docs/`
-> are in Vietnamese.*
+> deep chunk reading → slot-reservation blending. Public LB 0.9124. Docs are in Vietnamese.*
 
-**Public LB: precision 0,711 (hiện tại) · recall@5 0,9124 (giai đoạn trước).** Đây là
-phần **xếp hạng & chốt đáp án** của hệ thống (thành viên E); khâu sinh ứng viên do một
-thành viên khác phụ trách.
+**Public LB: precision 0,711 (hiện tại) · recall@5 0,9124 (giai đoạn trước).**
+
+### Hệ thống gồm hai phần
+
+| phần | việc | repo |
+|---|---|---|
+| **Phần 1** — truy hồi & sinh ứng viên | BM25 mức đoạn ⊕ dense bi-encoder, hoà RRF → rổ 50 văn bản/câu | **[justySusanto/Task1_Retrieval](https://github.com/justySusanto/Task1_Retrieval)** |
+| **Phần 2** — xếp hạng & chốt đáp án | cross-encoder 2 tầng + tinh chỉnh listwise → 1 doc_id | repo này |
+
+Repo này là **Phần 2**. Muốn chạy lại từ đầu thì cần cả hai — Phần 1 sinh ra rổ ứng viên
+mà Phần 2 tiêu thụ.
 
 ---
 
@@ -86,10 +93,10 @@ hai thứ hạng ở **mọi** tham số đã quét.
 ## Cấu trúc repo
 
 ```
-src/         15 module Python — cắt đoạn, chọn đoạn, chấm, chốt top-5, đo đạc
-notebooks/   25 notebook Kaggle, mỗi cái một lượt thí nghiệm
-docs/        báo cáo kỹ thuật + nhật ký + bảng đối chứng model
-results/     số liệu đủ để tái hiện MỌI phân tích trong docs/ trên CPU
+src/         module Python — cắt đoạn, chọn đoạn, chấm, chốt đáp án, đo trần
+notebooks/   notebook Kaggle, mỗi cái một lượt thí nghiệm
+docs/        sổ hướng đã đóng + bảng đối chứng model
+results/     số liệu đủ để tái hiện MỌI phân tích trên CPU, không cần GPU
 data/        trống — xem data/README.md
 ```
 
@@ -198,20 +205,15 @@ BM25 top-20 là **khó nhất có thể** — trong kho pháp luật, top-20 đ�
 6. **Tên repo model không đáng tin — phải đếm tham số thật.** Dưới lượng tử hoá NF4,
    `sum(p.numel())` báo chưa tới một nửa số thật.
 
-Đầy đủ trong `docs/NHAT_KY_KY_THUAT.md`.
+Đầy đủ trong [`docs/HUONG_DA_DONG.md`](docs/HUONG_DA_DONG.md).
 
 ## Tài liệu
 
 | file | nội dung |
 |---|---|
-| `docs/BaoCao_TomTat_Retrieval_Khim.docx` | 4 trang — phương pháp và các hướng đã thử, kèm kết quả nhanh |
-| `docs/BaoCao_ChiTiet_Retrieval_Khim.docx` | 15 trang — giao thức đo, tham số, số liệu, bẫy đã dính |
-| `docs/pipeline_loi_DSC.html` | sơ đồ pipeline + bảng phân tích điểm mất theo nguyên nhân |
-| `docs/bang_ablation.md` | đối chứng 10 cross-encoder trên **cùng 15.000 cặp** |
-| **`CLAUDE.md`** | **nguồn sự thật, ~1.820 dòng** — mọi kết luận kèm phép đo đứng sau nó, 12 quy tắc phương pháp, 8 bẫy kỹ thuật, toàn bộ lịch sử quyết định |
-| `docs/HUONG_DA_DONG.md` | sổ kết quả âm — bản cô đọng của `CLAUDE.md`, đọc được cho người ngoài |
-| `docs/CLAUDE_LUUTRU_den_28-08.md` | nhật ký chi tiết 12–28/08 (~4.000 dòng) |
-| `docs/NHAT_KY_KY_THUAT.md` | nhật ký kỹ thuật — mọi kết luận kèm phép đo đứng sau nó |
+| [`REPRODUCE.md`](REPRODUCE.md) | đường chạy 5 bước tái lập bài nộp — md5 mọi tạo phẩm, tham số phải đặt tay, 3 cổng kiểm, và mục "những chỗ KHÔNG tái lập được" |
+| [`docs/HUONG_DA_DONG.md`](docs/HUONG_DA_DONG.md) | sổ kết quả âm — 12 quy tắc phương pháp và lý do đóng từng hướng |
+| [`docs/bang_ablation.md`](docs/bang_ablation.md) | đối chứng 10 cross-encoder trên **cùng 15.000 cặp** |
 
 **Một kết quả từ bảng đối chứng:** số tham số không dự đoán được chất lượng.
 `mmarco-mMiniLMv2` (0,118B) đạt R@5 0,7217, hơn `ViRanker` (0,568B, 0,6867) tới

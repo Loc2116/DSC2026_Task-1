@@ -50,7 +50,9 @@ Repo không tái phát tán dữ liệu BTC. Đặt vào `data/` — xem `data/R
 
 ## 2. Đường chạy — 5 bước
 
-### Bước 1 · Rổ ứng viên (thành viên D)
+### Bước 1 · Rổ ứng viên — **Phần 1 của hệ thống, repo riêng**
+
+> **Mã nguồn: [justySusanto/Task1_Retrieval](https://github.com/justySusanto/Task1_Retrieval)**
 
 Hoà RRF giữa BM25 mức đoạn và bi-encoder `Vietnamese_Embedding`, giữ 50 văn bản/câu.
 
@@ -202,8 +204,9 @@ Nếu cả 192 câu đều phân định thì `z = 9/√192 = 0,65` (p ≈ 0,52)
 **③ Không có dự đoán trên đề thi trong repo.** `.gitignore` loại `scores_public_*`,
 `order_public*`, `submission*.zip`. Cuộc thi chưa kết thúc.
 
-**④ Rổ ứng viên (bước 1) không kèm theo** — 207 MB, và do thành viên khác phụ trách.
-Dựng lại được từ mã nguồn nhưng không nằm trong phạm vi tài liệu này.
+**④ File rổ ứng viên (bước 1) không kèm theo** — 207 MB mỗi file, quá lớn cho git.
+Nhưng **mã nguồn dựng nó có**: [justySusanto/Task1_Retrieval](https://github.com/justySusanto/Task1_Retrieval).
+Chạy Phần 1 trước để sinh rổ, rồi mới chạy các bước 2–5 ở repo này.
 
 ---
 
