@@ -2,7 +2,7 @@
 
 > Tài liệu này chép lại **kết quả âm**. Chúng đắt hơn kết quả dương: gần như toàn bộ
 > giờ GPU của dự án nằm ở đây. Cập nhật 12/09/2026.
-> Bài nộp cuối: **precision 0,711 · hạng 3/84** — đúng trần kiến trúc đã ước (0,71–0,72).
+> Kết quả cuộc thi: **Recall@5 = 0,9124 · Top 30/80**.
 
 ---
 

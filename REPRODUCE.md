@@ -1,38 +1,24 @@
 # Tái lập bài nộp — DSC 2026 Task 1
 
-Tài liệu này dựng lại **đúng một** bài nộp, từ dữ liệu thô của BTC tới file `.zip`.
+Tài liệu này mô tả cấu hình tái lập pipeline cho cuộc thi **DSC 2026 Task 1** (đánh giá bằng **Recall@5**, thành tích chung cuộc **Top 30/80**).
 
 | | |
 |---|---|
-| bài nộp | `sub_FT_N3_k50.zip` — 1.000 câu, **1 doc_id mỗi câu** |
-| điểm public | **precision 0,711** (08/09/2026) |
-| kiến trúc | rổ hoà RRF → cross-encoder 2 tầng → **cross-encoder tinh chỉnh listwise** xếp lại top-3 |
-| phần cứng | Kaggle T4 ×1 · tổng **~1,6 giờ GPU** cho toàn bộ đường chạy |
+| độ đo chính thức | **Recall@5** (top-5 `doc_id` mỗi câu) |
+| điểm public Recall@5 | **0,9124** (`notebooks/fusion_v3_run.ipynb`) |
+| kiến trúc chính | rổ hoà RRF → cross-encoder 2 tầng đọc sâu (`M=20, K=50`) → giữ chỗ `n=2` |
+| nhánh thử nghiệm thêm | `sub_FT_N3_k50.zip` (`notebooks/public_ft_run.ipynb`, listwise FT) |
+| phần cứng | Kaggle T4 ×1 · **~1,6 giờ GPU** cho lượt chạy tinh chỉnh |
 | nền tảng | Kaggle notebook, Python 3.11, `requirements.txt` |
-
-> **Vì sao là 0,711 mà không phải 0,712.** Bài `sub_LAI_FT3_nua_dau.zip` đạt 0,712 nhưng
-> nó lấy mô hình tinh chỉnh cho 500 câu đầu và mô hình gốc cho 500 câu sau — **một
-> phương pháp không nhất quán**, sinh ra để cứu một lượt chạy hỏng. Hai bài lệch nhau
-> **đúng 1 câu trên 1.000**, nằm sâu dưới sàn nhiễu (~1,45 điểm). Gói này tái lập bài
-> áp **một phương pháp duy nhất cho cả 1.000 câu**.
 
 ---
 
-## 0. Độ đo — đọc trước, nếu không sẽ tái lập ra số khác hẳn
+## 0. Độ đo đánh giá
 
-Email BTC ngày 02/08/2026: *"Precision là độ đo chính và Recall là độ đo được sử dụng
-trong trường hợp các nhóm có điểm Precision bằng nhau."*
+Độ đo chính thức của bài toán là **Recall@5** trên danh sách top-5 `doc_id` dự đoán cho mỗi câu hỏi (chi tiết cài đặt và unit test kiểm tra ở `src/metrics.py`).
 
-Bộ chấm tính precision **chia cho số id thực nộp**, không chia cho 5 cố định — đã xác
-minh bằng thực nghiệm ngày 07/09 (nộp 1 id, ngưỡng đặt trước 0,60–0,70, nhận về 0,702).
-
-Hệ quả: `precision@m` trên dev300 là **m=1 → 0,7100** · m=2 → 0,4300 · m=3 → 0,3056 ·
-m=5 → 0,1933. Nộp thêm id thứ `m+1` chỉ tăng precision nếu `p(m+1)` lớn hơn trung bình
-hiện tại, điều không xảy ra với một danh sách đã xếp hạng. **Mọi bài nộp ở đây là 1 id.**
-
-Cột **Score** trên *My Submissions* của Codabench là **recall**, không phải precision.
-Tỉ số giữa hai độ đo cố định ở 0,9558 (do 1,047 gold/câu), nên so recall giữa hai bài
-1-id là tương đương so precision.
+* Nhánh **`notebooks/fusion_v3_run.ipynb`** xuất đúng 5 `doc_id` theo quy tắc giữ chỗ `n=2`, đạt **Recall@5 = 0,9124** trên public leaderboard.
+* Nhánh **`notebooks/public_ft_run.ipynb`** là thử nghiệm bổ sung với cross-encoder tinh chỉnh listwise.
 
 ---
 
